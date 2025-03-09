@@ -37,5 +37,51 @@
 
     <div id="player-container">
         <iframe id="youtubePlayer" 
-            src="https://www.youtube.com/embed/VIDEO_ID?controls=0&modestbranding=1&rel=0" 
-            frameborder="0" allow="
+            src="https://www.youtube.com/embed/ci5vgwoyfH8?controls=0&modestbranding=1&rel=0" 
+            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+        </iframe>
+    </div>
+
+    <div class="controls">
+        <button onclick="playVideo()">Play</button>
+        <button onclick="pauseVideo()">Pause</button>
+        <button onclick="muteVideo()">Mute</button>
+        <button onclick="unmuteVideo()">Unmute</button>
+        <button onclick="enterFullscreen()">Fullscreen</button>
+    </div>
+
+    <script>
+        var iframe = document.getElementById("youtubePlayer");
+        var player = iframe.contentWindow;
+
+        function playVideo() {
+            player.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
+
+        function pauseVideo() {
+            player.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+
+        function muteVideo() {
+            player.postMessage('{"event":"command","func":"mute","args":""}', '*');
+        }
+
+        function unmuteVideo() {
+            player.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+        }
+
+        function enterFullscreen() {
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) { // Firefox
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) { // IE/Edge
+                iframe.msRequestFullscreen();
+            }
+        }
+    </script>
+
+</body>
+</html>

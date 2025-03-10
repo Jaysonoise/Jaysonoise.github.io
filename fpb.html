@@ -39,6 +39,7 @@
             height: 100%;
             background: transparent;
             z-index: 2;
+            transition: height 0.3s ease-in-out;
         }
         .controls {
             margin-top: 15px;
@@ -69,21 +70,6 @@
             height: 65px;
             font-size: 24px;
         }
-        #skipAdsBtn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: red;
-            color: white;
-            padding: 10px 20px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            display: none;
-            z-index: 3;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -93,7 +79,6 @@
     <div id="player-container">
         <div id="player"></div>
         <div class="overlay" id="videoOverlay"></div>
-        <button id="skipAdsBtn" onclick="skipAd()">Skip Ads</button>
     </div>
 
     <div class="controls">
@@ -177,47 +162,14 @@
 
                 if (currentTime < 2 && videoData.title === '') {
                     console.log("Ad detected! Adjusting overlay...");
-                    if (skipButton) {
-                        adjustOverlayForSkipButton(skipButton);
-                    } else {
-                        document.getElementById("skipAdsBtn").style.display = "block";
-                    }
+                    overlay.style.height = "80%"; // Exposes the bottom part of the video for the Skip Ad button
                 } else if (player.getPlayerState() === 1 && currentTime < 3) {
                     console.log("Mid-roll ad detected! Adjusting overlay...");
-                    if (skipButton) {
-                        adjustOverlayForSkipButton(skipButton);
-                    } else {
-                        document.getElementById("skipAdsBtn").style.display = "block";
-                    }
+                    overlay.style.height = "80%"; // Exposes the bottom part for mid-roll ads too
                 } else {
-                    overlay.style.width = "100%";
-                    overlay.style.height = "100%";
-                    document.getElementById("skipAdsBtn").style.display = "none";
+                    overlay.style.height = "100%"; // Covers the whole video when the ad ends
                 }
             }, 1000);
-        }
-
-        function adjustOverlayForSkipButton(skipButton) {
-            var rect = skipButton.getBoundingClientRect();
-            var overlay = document.getElementById("videoOverlay");
-
-            overlay.style.width = rect.width + "px";
-            overlay.style.height = rect.height + "px";
-            overlay.style.top = rect.top + "px";
-            overlay.style.left = rect.left + "px";
-            overlay.style.background = "transparent";
-        }
-
-        function skipAd() {
-            var skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
-            if (skipButton) {
-                skipButton.click();
-                console.log("Clicked YouTube 'Skip Ad' button.");
-            } else {
-                player.seekTo(player.getCurrentTime() + 5, true);
-                console.log("No skip button found, seeking forward.");
-            }
-            document.getElementById("skipAdsBtn").style.display = "none";
         }
     </script>
 

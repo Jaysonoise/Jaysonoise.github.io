@@ -110,7 +110,7 @@
                 },
                 events: {
                     'onStateChange': onPlayerStateChange,
-                    'onReady': () => { startAdCheck(); }
+                    'onReady': onPlayerReady
                 }
             });
         }
@@ -119,6 +119,11 @@
             var regExp = /(?:youtube\.com\/(?:[^\/]+\/[^\/]+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
             var match = url.match(regExp);
             return match ? match[1] : null;
+        }
+
+        function onPlayerReady(event) {
+            skipPreRollAds();
+            startAdCheck();
         }
 
         function togglePlayPause() {
@@ -148,12 +153,20 @@
             }
         }
 
+        function skipPreRollAds() {
+            setTimeout(() => {
+                if (player.getCurrentTime() < 5) {
+                    player.seekTo(5, true); 
+                }
+            }, 2000);
+        }
+
         function startAdCheck() {
             adCheckInterval = setInterval(() => {
                 var currentTime = player.getCurrentTime();
                 if (player.getPlayerState() === 1 && currentTime < lastTime) {
-                    console.log("Ad detected! Reloading...");
-                    player.seekTo(lastTime, true);
+                    console.log("Ad detected! Skipping...");
+                    player.seekTo(currentTime + 5, true);  
                 }
                 lastTime = currentTime;
             }, 1000);

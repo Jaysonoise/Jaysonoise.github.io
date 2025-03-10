@@ -4,36 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Affiliate Marketing Beginner Guide</title>
+    <!-- Meta Tags for SEO & Social Sharing -->
     <meta content="How You Can Make Extra 100K to 300K Weekly" name="description">
     <meta content="Affiliate Marketing, digital marketing, how to earn extra income" name="keywords">
     <meta property="og:title" content="Secret Exposed: How You Can Make Extra 100K to 300K Weekly">
     <meta property="og:url" content="https://jaysonoise.github.io/fpb.html">
     <meta property="og:image" content="https://i.ibb.co/TRNyhX4/IMG-20221228-171232-678.jpg">
     <meta property="og:description" content="Free video reveals how you can earn at least 100K every week">
+    <!-- Bootstrap 5 & FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-      body { background-color: #fff; text-align: center; padding-top: 20px; }
-      h1 { font-size: 24px; margin-bottom: 20px; font-weight: bold; }
-      .video-container { position: relative; width: 100%; max-width: 800px; margin: auto; overflow: hidden; padding-top: 56.25%; }
-      iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-      .overlay { position: absolute; width: 100%; background: transparent; z-index: 2; }
-      #top-overlay { top: 0; height: 15%; }
-      #middle-overlay { top: 15%; height: 65%; background: white; }
-      #bottom-overlay { bottom: 0; height: 20%; }
-      .controls { margin-top: 10px; display: flex; justify-content: center; gap: 15px; }
-      .control-btn { width: 50px; height: 50px; border-radius: 50%; background: black; color: white; border: none; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: transform 0.2s; }
-      .control-btn:active { transform: scale(0.9); }
-      .play-btn { width: 60px; height: 60px; font-size: 24px; }
-      .seek-message { position: absolute; background: rgba(0, 0, 0, 0.7); color: white; padding: 5px 10px; border-radius: 5px; display: none; z-index: 3; font-size: 16px; }
-      .seek-backward { top: 50%; left: 10px; transform: translateY(-50%); }
-      .seek-forward { top: 50%; right: 10px; transform: translateY(-50%); }
+      body {
+        background-color: #fff;
+        text-align: center;
+        padding-top: 20px;
+      }
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+      .video-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        overflow: hidden;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      /* Overlays */
+      .overlay {
+        position: absolute;
+        width: 100%;
+        background: transparent;
+        z-index: 2;
+      }
+      #top-overlay {
+        top: 0;
+        height: 15%;
+      }
+      #middle-overlay {
+        top: 15%;
+        height: 65%;
+        background: white;
+      }
+      #bottom-overlay {
+        bottom: 0;
+        height: 20%;
+      }
+      /* Controls */
+      .controls {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+      }
+      .control-btn {
+        width: 50px; height: 50px;
+        border-radius: 50%;
+        background: black;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: transform 0.2s;
+      }
+      .control-btn:active {
+        transform: scale(0.9);
+      }
+      .play-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+      }
+      /* Seek Messages */
+      .seek-message {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: none;
+        z-index: 3;
+        font-size: 16px;
+      }
+      .seek-backward {
+        top: 50%; left: 10px;
+        transform: translateY(-50%);
+      }
+      .seek-forward {
+        top: 50%; right: 10px;
+        transform: translateY(-50%);
+      }
     </style>
   </head>
   <body>
-    <h1><span class="text-danger">Secret Exposed:</span> How You Can Make Extra 100K to 300K Weekly</h1>
+    <h1><span class="text-danger">Secret Exposed:</span>How You Can Make Extra 100K to 300K Weekly</h1>
     <div class="video-container">
       <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+      <!-- Overlays -->
       <div class="overlay" id="top-overlay"></div>
       <div class="overlay" id="middle-overlay"></div>
       <div class="overlay" id="bottom-overlay"></div>
@@ -42,75 +122,75 @@
     </div>
     <div class="controls">
       <button class="control-btn" onclick="seek(-10)"><i class="fas fa-backward"></i></button>
-      <button class="control-btn play-btn" id="play-pause" onclick="togglePlayPause()"><i class="fas fa-play"></i></button>
+      <button class="control-btn play-btn" id="play-pause" onclick="togglePlayPause()">
+        <i class="fas fa-play"></i>
+      </button>
       <button class="control-btn" onclick="seek(10)"><i class="fas fa-forward"></i></button>
     </div>
+
     <script>
       let player;
       let isPausedManually = false;
+
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('youtube-video', {
           events: { 'onStateChange': onPlayerStateChange }
         });
       }
-      function togglePlayPause() {
-        if (!player) return;
-        const playPauseBtn = document.getElementById('play-pause');
-        const icon = playPauseBtn.querySelector('i');
-        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-          player.pauseVideo();
-          isPausedManually = true;
-          icon.className = "fas fa-play";
-        } else {
-          player.playVideo();
-          isPausedManually = false;
-          icon.className = "fas fa-pause";
-        }
-      }
-      function seek(seconds) {
-        if (!player) return;
-        player.seekTo(player.getCurrentTime() + seconds, true);
-        showSeekMessage(seconds);
-      }
-      function showSeekMessage(seconds) {
-        const message = seconds > 0 ? document.getElementById('seek-forward-msg') : document.getElementById('seek-backward-msg');
-        message.style.display = 'block';
-        setTimeout(() => message.style.display = 'none', 800);
-      }
+
       function onPlayerStateChange(event) {
-        const playPauseBtn = document.getElementById('play-pause');
-        const icon = playPauseBtn.querySelector('i');
-        if (event.data === YT.PlayerState.ENDED) {
-          icon.className = "fas fa-play";
-        } else if (event.data === YT.PlayerState.PLAYING) {
-          icon.className = "fas fa-pause";
-        } else if (event.data === YT.PlayerState.PAUSED && !isPausedManually) {
-          icon.className = "fas fa-play";
-        }
         detectAd();
       }
+
       function detectAd() {
         setInterval(() => {
           if (!player) return;
+
           const videoUrl = player.getVideoUrl();
           const bottomOverlay = document.getElementById('bottom-overlay');
+
           try {
             const iframe = document.querySelector("iframe");
             const iframeDoc = iframe.contentWindow.document;
+            const adOverlay = iframeDoc.querySelector(".ytp-ad-overlay-container");
             const skipButton = iframeDoc.querySelector(".ytp-ad-skip-button");
+            const sponsoredText = [...iframeDoc.querySelectorAll("*")].find(el => el.textContent.includes("Sponsored"));
 
-            if (videoUrl.includes("googlevideo.com") || skipButton) {
-              console.log("Ad detected! Attempting to skip...");
-              bottomOverlay.style.display = "none"; // Remove overlay to allow skipping
-              if (skipButton) skipButton.click();
-            } else {
-              bottomOverlay.style.display = "block"; // Restore overlay
+            if (videoUrl.includes("googlevideo.com") || skipButton || adOverlay || sponsoredText) {
+              console.log("Ad detected! Skipping...");
+              showSkippedMessage();
+              skipAd();
             }
           } catch (error) {
             console.warn("CORS Restriction: Cannot fully access iframe.");
           }
         }, 1000);
       }
+
+      function skipAd() {
+        if (!player) return;
+        const currentTime = player.getCurrentTime();
+        player.loadVideoById(player.getVideoData().video_id, currentTime);
+      }
+
+      function showSkippedMessage() {
+        const message = document.createElement("div");
+        message.textContent = "Skipped Ads";
+        message.style.position = "absolute";
+        message.style.top = "50%";
+        message.style.left = "50%";
+        message.style.transform = "translate(-50%, -50%)";
+        message.style.background = "rgba(0, 0, 0, 0.8)";
+        message.style.color = "white";
+        message.style.padding = "10px 20px";
+        message.style.borderRadius = "5px";
+        message.style.fontSize = "16px";
+        message.style.zIndex = "3";
+        document.body.appendChild(message);
+
+        setTimeout(() => message.remove(), 1000);
+      }
+
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];

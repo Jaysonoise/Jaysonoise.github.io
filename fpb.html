@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom YouTube Player</title>
 
-    <!-- Bootstrap 5 & FontAwesome -->
+    <!-- Bootstrap 5 & FontAwesome (Updated Link) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
     <style>
         body {
@@ -83,11 +83,11 @@
 <body>
 
     <div class="video-container">
-        <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+        <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
         <div class="overlay" id="overlay"></div>
 
-        <div class="seek-message seek-backward" id="seek-backward-msg"><< Seek 10s</div>
-        <div class="seek-message seek-forward" id="seek-forward-msg">Seek 10s >></div>
+        <div class="seek-message seek-backward" id="seek-backward-msg"><i class="fas fa-backward"></i> Seek 10s</div>
+        <div class="seek-message seek-forward" id="seek-forward-msg">Seek 10s <i class="fas fa-forward"></i></div>
     </div>
 
     <div class="controls">
@@ -150,25 +150,30 @@
                 icon.className = "fas fa-play";
             }
 
-            checkForAdSkip();
+            checkForAds();
         }
 
-        function checkForAdSkip() {
+        function checkForAds() {
             setInterval(() => {
                 const iframe = document.querySelector("iframe");
                 if (!iframe || !iframe.contentWindow) return;
 
                 try {
-                    const skipButton = iframe.contentWindow.document.querySelector(".ytp-ad-skip-button");
                     const overlay = document.getElementById('overlay');
 
-                    if (skipButton) {
-                        overlay.style.display = "none"; // Allow skip button click
+                    // Detects YouTube ad elements
+                    const adOverlay = iframe.contentWindow.document.querySelector(".ytp-ad-overlay-container");
+                    const skipButton = iframe.contentWindow.document.querySelector(".ytp-ad-skip-button");
+
+                    if (skipButton || adOverlay) {
+                        console.log("Ad detected. Skipping...");
+                        player.seekTo(player.getCurrentTime() + 5, true); // Skip ahead 5 seconds
+                        overlay.style.display = "none"; // Allow skip button interaction
                     } else {
                         overlay.style.display = "block"; // Re-add overlay after ad
                     }
                 } catch (error) {
-                    console.warn("Cross-Origin Restriction: Cannot detect skip button directly.");
+                    console.warn("Cross-Origin Restriction: Cannot detect ads directly.");
                 }
             }, 1000);
         }

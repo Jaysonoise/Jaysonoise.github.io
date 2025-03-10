@@ -172,34 +172,23 @@
                 var videoData = player.getVideoData();
 
                 // Detect Pre-Roll Ads
-                if (currentTime < 2 && videoData.title === '') {
+                if (currentTime < 3 && videoData.title === '') {
                     console.log("Pre-roll ad detected!");
                     setTimeout(() => {
                         showSkipMessage();
-                        skipAd();
-                    }, 1000); 
+                        player.seekTo(5, true);
+                    }, 3000); 
                 }
 
                 // Detect Mid-Roll Ads
                 if (player.getPlayerState() === 1 && currentTime < lastTime) {
                     console.log("Mid-roll ad detected! Skipping...");
                     showSkipMessage();
-                    player.seekTo(currentTime + 5, true); // Skip mid-roll ad
+                    player.seekTo(currentTime + 5, true);
                 }
 
                 lastTime = currentTime;
             }, 1000);
-        }
-
-        function skipAd() {
-            var skipButton = document.querySelector(".ytp-ad-skip-button");
-            if (skipButton) {
-                skipButton.click();
-                console.log("Clicked 'Skip Ad' button.");
-            } else {
-                player.seekTo(player.getCurrentTime() + 5, true);
-                console.log("No skip button found, seeking forward.");
-            }
         }
 
         function showSkipMessage() {

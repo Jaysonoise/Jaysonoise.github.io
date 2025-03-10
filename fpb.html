@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <!-- Control Buttons (Updated Order) -->
+    <!-- Control Buttons -->
     <div class="controls">
         <button class="control-btn" onclick="seekBackward()">
             <i class="fa-solid fa-backward"></i>
@@ -122,16 +122,14 @@
         <button class="control-btn" onclick="seekForward()">
             <i class="fa-solid fa-forward"></i>
         </button>
-        <button id="muteUnmuteBtn" class="control-btn" onclick="toggleMute()">
-            <i class="fa-solid fa-volume-up"></i>
-        </button>
-        <button class="control-btn" onclick="enterFullscreen()">
-            <i class="fa-solid fa-expand"></i>
-        </button>
     </div>
 
     <script>
         var player;
+        var lastTime = 0;
+        var adCheckTimeout;
+        var isUserPaused = false; // Track if the user paused manually
+
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '315',
@@ -142,6 +140,9 @@
                     'modestbranding': 1,
                     'rel': 0,
                     'showinfo': 0
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
                 }
             });
         }
@@ -156,21 +157,10 @@
             var btn = document.getElementById("playPauseBtn");
             if (player.getPlayerState() === 1) {
                 player.pauseVideo();
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                isUserPaused = true; // Mark as user-initiated pause
             } else {
                 player.playVideo();
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            }
-        }
-
-        function toggleMute() {
-            var btn = document.getElementById("muteUnmuteBtn");
-            if (player.isMuted()) {
-                player.unMute();
-                btn.innerHTML = '<i class="fa-solid fa-volume-up"></i>';
-            } else {
-                player.mute();
-                btn.innerHTML = '<i class="fa-solid fa-volume-mute"></i>';
+                isUserPaused = false; // Mark as user-initiated play
             }
         }
 
@@ -194,16 +184,27 @@
             }, 800);
         }
 
-        function enterFullscreen() {
-            var iframe = document.getElementById("player");
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.mozRequestFullScreen) {
-                iframe.mozRequestFullScreen();
-            } else if (iframe.webkitRequestFullscreen) {
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) {
-                iframe.msRequestFullscreen();
+        function onPlayerStateChange(event) {
+            var btn = document.getElementById("playPauseBtn");
+
+            if (event.data === 1) { // Video is playing
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else if (event.data === 2) { // Video is paused
+                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+
+                if (!isUserPaused) { // If video was not paused by the user, check for ads
+                    lastTime = player.getCurrentTime();
+                    adCheckTimeout = setTimeout(() => {
+                        if (player.getPlayerState() === 2) {
+                            player.loadVideoById({
+                                videoId: getYouTubeID('https://m.youtube.com/watch?v=ci5vgwoyfH8'),
+                                startSeconds: lastTime
+                            });
+                        }
+                    }, 2000);
+                }
+            } else {
+                clearTimeout(adCheckTimeout);
             }
         }
     </script>

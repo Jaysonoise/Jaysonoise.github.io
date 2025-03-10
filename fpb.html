@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom YouTube Player</title>
-    
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -69,18 +69,20 @@
             height: 65px;
             font-size: 24px;
         }
-        #adSkipMessage {
+        #skipAdsBtn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.7);
+            background: red;
             color: white;
             padding: 10px 20px;
             font-size: 18px;
+            border: none;
             border-radius: 5px;
             display: none;
             z-index: 3;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -91,7 +93,7 @@
     <div id="player-container">
         <div id="player"></div>
         <div class="overlay"></div>
-        <div id="adSkipMessage">Skipped Ads</div>
+        <button id="skipAdsBtn" onclick="skipAd()">Skip Ads</button>
     </div>
 
     <div class="controls">
@@ -171,20 +173,14 @@
                 var currentTime = player.getCurrentTime();
                 var videoData = player.getVideoData();
 
-                // Detect Pre-Roll Ads
                 if (currentTime < 2 && videoData.title === '') {
-                    console.log("Pre-roll ad detected! Waiting 3 seconds...");
-                    setTimeout(() => {
-                        showSkipMessage();
-                        skipAd();
-                    }, 3000); 
-                }
-
-                // Detect Mid-Roll Ads
-                if (player.getPlayerState() === 1 && currentTime < lastTime) {
-                    console.log("Mid-roll ad detected! Skipping...");
-                    showSkipMessage();
-                    player.seekTo(currentTime + 5, true); // Skip mid-roll ad
+                    console.log("Ad detected! Showing 'Skip Ads' button.");
+                    document.getElementById("skipAdsBtn").style.display = "block";
+                } else if (player.getPlayerState() === 1 && currentTime < lastTime) {
+                    console.log("Mid-roll ad detected! Showing 'Skip Ads' button.");
+                    document.getElementById("skipAdsBtn").style.display = "block";
+                } else {
+                    document.getElementById("skipAdsBtn").style.display = "none";
                 }
 
                 lastTime = currentTime;
@@ -200,14 +196,7 @@
                 player.seekTo(player.getCurrentTime() + 5, true);
                 console.log("No skip button found, seeking forward.");
             }
-        }
-
-        function showSkipMessage() {
-            var msg = document.getElementById("adSkipMessage");
-            msg.style.display = "block";
-            setTimeout(() => {
-                msg.style.display = "none";
-            }, 1000);
+            document.getElementById("skipAdsBtn").style.display = "none";
         }
     </script>
 

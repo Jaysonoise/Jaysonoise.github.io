@@ -39,7 +39,7 @@
             height: 100%;
             background: transparent;
             z-index: 2;
-            transition: height 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
         }
         .controls {
             margin-top: 15px;
@@ -154,20 +154,14 @@
 
         function startAdCheck() {
             adCheckInterval = setInterval(() => {
-                var currentTime = player.getCurrentTime();
-                var videoData = player.getVideoData();
                 var overlay = document.getElementById("videoOverlay");
-
                 var skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
 
-                if (currentTime < 2 && videoData.title === '') {
+                if (skipButton) {
                     console.log("Ad detected! Adjusting overlay...");
-                    overlay.style.height = "80%"; // Exposes the bottom part of the video for the Skip Ad button
-                } else if (player.getPlayerState() === 1 && currentTime < 3) {
-                    console.log("Mid-roll ad detected! Adjusting overlay...");
-                    overlay.style.height = "80%"; // Exposes the bottom part for mid-roll ads too
+                    overlay.style.pointerEvents = "none"; // Allows clicking the Skip Ad button
                 } else {
-                    overlay.style.height = "100%"; // Covers the whole video when the ad ends
+                    overlay.style.pointerEvents = "all"; // Blocks interaction with YouTube UI
                 }
             }, 1000);
         }

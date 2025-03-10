@@ -4,32 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom YouTube Player</title>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- YouTube API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
             text-align: center;
-            margin: 20px;
-            background: #f8f9fa;
         }
-        #player-container {
+        .video-container {
             position: relative;
-            max-width: 100%;
-            width: 560px;
-            height: 315px;
-            margin: auto;
-            background: black;
-        }
-        #player {
             width: 100%;
-            height: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+        iframe {
+            width: 100%;
+            height: 400px;
+            display: block;
         }
         .overlay {
             position: absolute;
@@ -39,132 +31,146 @@
             height: 100%;
             background: transparent;
             z-index: 2;
-            transition: opacity 0.3s ease-in-out;
         }
         .controls {
-            margin-top: 15px;
             display: flex;
             justify-content: center;
-            gap: 10px;
-            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
         }
         .control-btn {
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: black;
             color: white;
-            background: black;
             border: none;
             border-radius: 50%;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out;
-        }
-        .control-btn:active {
-            transform: scale(0.9);
-        }
-        #playPauseBtn {
-            width: 65px;
-            height: 65px;
             font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .control-btn:hover {
+            background-color: #222;
+        }
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            font-size: 28px;
+        }
+        .seek-indicator {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none;
+            z-index: 3;
+        }
+        .seek-backward {
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .seek-forward {
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
         }
     </style>
 </head>
 <body>
 
-    <h2>Custom YouTube Player</h2>
-
-    <div id="player-container">
-        <div id="player"></div>
-        <div class="overlay" id="videoOverlay"></div>
+    <div class="video-container">
+        <iframe id="youtubePlayer" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="overlay"></div>
+        <div id="seekBackwardIndicator" class="seek-indicator seek-backward">Seek 10s Backward</div>
+        <div id="seekForwardIndicator" class="seek-indicator seek-forward">Seek 10s Forward</div>
     </div>
 
     <div class="controls">
         <button class="control-btn" onclick="seekBackward()">
-            <i class="fa-solid fa-backward"></i>
+            <i class="fas fa-backward"></i>
         </button>
-        <button id="playPauseBtn" class="control-btn" onclick="togglePlayPause()">
-            <i class="fa-solid fa-play"></i>
+        <button id="playPauseBtn" class="control-btn play-btn" onclick="togglePlayPause()">
+            <i class="fas fa-play"></i>
         </button>
         <button class="control-btn" onclick="seekForward()">
-            <i class="fa-solid fa-forward"></i>
+            <i class="fas fa-forward"></i>
         </button>
     </div>
 
     <script>
-        var player;
-        var adCheckInterval;
+        let player;
+        let isPlaying = false;
 
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '315',
-                width: '560',
-                videoId: getYouTubeID('https://m.youtube.com/watch?v=ci5vgwoyfH8'),
-                playerVars: {
-                    'controls': 0,
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'showinfo': 0
-                },
+            player = new YT.Player('youtubePlayer', {
                 events: {
-                    'onStateChange': onPlayerStateChange,
-                    'onReady': onPlayerReady
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
                 }
             });
         }
 
-        function getYouTubeID(url) {
-            var regExp = /(?:youtube\.com\/(?:[^\/]+\/[^\/]+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            var match = url.match(regExp);
-            return match ? match[1] : null;
-        }
-
         function onPlayerReady(event) {
-            startAdCheck();
-        }
-
-        function togglePlayPause() {
-            var btn = document.getElementById("playPauseBtn");
-            if (player.getPlayerState() === 1) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
-        }
-
-        function seekForward() {
-            player.seekTo(player.getCurrentTime() + 10, true);
-        }
-
-        function seekBackward() {
-            player.seekTo(player.getCurrentTime() - 10, true);
+            player.mute(); // Mute on load
         }
 
         function onPlayerStateChange(event) {
-            var btn = document.getElementById("playPauseBtn");
-
-            if (event.data === 1) { 
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            } else if (event.data === 2) { 
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            if (event.data === YT.PlayerState.ENDED) {
+                document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+                isPlaying = false;
             }
         }
 
-        function startAdCheck() {
-            adCheckInterval = setInterval(() => {
-                var overlay = document.getElementById("videoOverlay");
-                var skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
-
-                if (skipButton) {
-                    console.log("Ad detected! Adjusting overlay...");
-                    overlay.style.pointerEvents = "none"; // Allows clicking the Skip Ad button
-                } else {
-                    overlay.style.pointerEvents = "all"; // Blocks interaction with YouTube UI
-                }
-            }, 1000);
+        function togglePlayPause() {
+            if (isPlaying) {
+                player.pauseVideo();
+                document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                player.playVideo();
+                document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-pause"></i>';
+            }
+            isPlaying = !isPlaying;
         }
+
+        function seekBackward() {
+            let currentTime = player.getCurrentTime();
+            player.seekTo(currentTime - 10, true);
+            showSeekIndicator('seekBackwardIndicator');
+        }
+
+        function seekForward() {
+            let currentTime = player.getCurrentTime();
+            player.seekTo(currentTime + 10, true);
+            showSeekIndicator('seekForwardIndicator');
+        }
+
+        function showSeekIndicator(id) {
+            let indicator = document.getElementById(id);
+            indicator.style.display = "block";
+            setTimeout(() => indicator.style.display = "none", 800);
+        }
+
+        function skipAds() {
+            if (player) {
+                let currentTime = player.getCurrentTime();
+                if (player.getVideoLoadedFraction() < 0.1) {
+                    player.seekTo(currentTime + 1, true);
+                }
+            }
+        }
+
+        setInterval(skipAds, 1000);
+
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
 
 </body>

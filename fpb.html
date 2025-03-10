@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom YouTube Player</title>
-
+    
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -31,7 +31,6 @@
             width: 100%;
             height: 100%;
         }
-        /* Transparent overlay to prevent YouTube clicks */
         .overlay {
             position: absolute;
             top: 0;
@@ -41,28 +40,6 @@
             background: transparent;
             z-index: 2;
         }
-        /* Seek Message */
-        .seek-message {
-            position: absolute;
-            top: 50%;
-            font-size: 20px;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 15px;
-            border-radius: 5px;
-            display: none;
-            z-index: 3;
-            transition: opacity 0.3s ease-out;
-        }
-        .seek-message.right {
-            right: 10px;
-            transform: translateY(-50%);
-        }
-        .seek-message.left {
-            left: 10px;
-            transform: translateY(-50%);
-        }
-        /* Button Styles */
         .controls {
             margin-top: 15px;
             display: flex;
@@ -87,7 +64,6 @@
         .control-btn:active {
             transform: scale(0.9);
         }
-        /* Larger Play/Pause Button */
         #playPauseBtn {
             width: 65px;
             height: 65px;
@@ -99,19 +75,11 @@
 
     <h2>Custom YouTube Player</h2>
 
-    <!-- Video Container -->
     <div id="player-container">
         <div id="player"></div>
         <div class="overlay"></div>
-        <div id="seek-forward-msg" class="seek-message right">
-            <i class="fa-solid fa-forward"></i> +10s
-        </div>
-        <div id="seek-backward-msg" class="seek-message left">
-            <i class="fa-solid fa-backward"></i> -10s
-        </div>
     </div>
 
-    <!-- Control Buttons -->
     <div class="controls">
         <button class="control-btn" onclick="seekBackward()">
             <i class="fa-solid fa-backward"></i>
@@ -127,8 +95,7 @@
     <script>
         var player;
         var lastTime = 0;
-        var adCheckTimeout;
-        var isUserPaused = false; // Track if the user paused manually
+        var adCheckInterval;
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
@@ -142,7 +109,8 @@
                     'showinfo': 0
                 },
                 events: {
-                    'onStateChange': onPlayerStateChange
+                    'onStateChange': onPlayerStateChange,
+                    'onReady': () => { startAdCheck(); }
                 }
             });
         }
@@ -157,55 +125,38 @@
             var btn = document.getElementById("playPauseBtn");
             if (player.getPlayerState() === 1) {
                 player.pauseVideo();
-                isUserPaused = true; // Mark as user-initiated pause
             } else {
                 player.playVideo();
-                isUserPaused = false; // Mark as user-initiated play
             }
         }
 
         function seekForward() {
             player.seekTo(player.getCurrentTime() + 10, true);
-            showSeekMessage('seek-forward-msg');
         }
 
         function seekBackward() {
             player.seekTo(player.getCurrentTime() - 10, true);
-            showSeekMessage('seek-backward-msg');
-        }
-
-        function showSeekMessage(id) {
-            var msg = document.getElementById(id);
-            msg.style.display = "block";
-            msg.style.opacity = "1";
-            setTimeout(() => {
-                msg.style.opacity = "0";
-                setTimeout(() => msg.style.display = "none", 300);
-            }, 800);
         }
 
         function onPlayerStateChange(event) {
             var btn = document.getElementById("playPauseBtn");
 
-            if (event.data === 1) { // Video is playing
+            if (event.data === 1) { 
                 btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            } else if (event.data === 2) { // Video is paused
+            } else if (event.data === 2) { 
                 btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-
-                if (!isUserPaused) { // If video was not paused by the user, check for ads
-                    lastTime = player.getCurrentTime();
-                    adCheckTimeout = setTimeout(() => {
-                        if (player.getPlayerState() === 2) {
-                            player.loadVideoById({
-                                videoId: getYouTubeID('https://m.youtube.com/watch?v=ci5vgwoyfH8'),
-                                startSeconds: lastTime
-                            });
-                        }
-                    }, 2000);
-                }
-            } else {
-                clearTimeout(adCheckTimeout);
             }
+        }
+
+        function startAdCheck() {
+            adCheckInterval = setInterval(() => {
+                var currentTime = player.getCurrentTime();
+                if (player.getPlayerState() === 1 && currentTime < lastTime) {
+                    console.log("Ad detected! Reloading...");
+                    player.seekTo(lastTime, true);
+                }
+                lastTime = currentTime;
+            }, 1000);
         }
     </script>
 

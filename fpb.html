@@ -95,6 +95,7 @@
     <script>
         var player;
         var lastTime = 0;
+        var lastVideoDuration = 0;
         var adCheckInterval;
 
         function onYouTubeIframeAPIReady() {
@@ -154,21 +155,37 @@
         }
 
         function skipPreRollAds() {
-            setTimeout(() => {
-                if (player.getCurrentTime() < 5) {
-                    player.seekTo(5, true); 
+            let attempts = 0;
+            let maxAttempts = 5;
+
+            function trySkip() {
+                if (player.getCurrentTime() < 5 && attempts < maxAttempts) {
+                    player.seekTo(5, true);
+                    attempts++;
+                    setTimeout(trySkip, 1000);
                 }
-            }, 2000);
+            }
+
+            setTimeout(trySkip, 2000);
         }
 
         function startAdCheck() {
             adCheckInterval = setInterval(() => {
                 var currentTime = player.getCurrentTime();
-                if (player.getPlayerState() === 1 && currentTime < lastTime) {
+                var currentDuration = player.getDuration();
+                
+                if (lastVideoDuration > 0 && currentDuration !== lastVideoDuration) {
                     console.log("Ad detected! Skipping...");
-                    player.seekTo(currentTime + 5, true);  
+                    player.seekTo(currentTime + 5, true);
                 }
+
+                if (player.getPlayerState() === 1 && currentTime < lastTime) {
+                    console.log("Mid-roll ad detected! Skipping...");
+                    player.seekTo(currentTime + 5, true);
+                }
+
                 lastTime = currentTime;
+                lastVideoDuration = currentDuration;
             }, 1000);
         }
     </script>

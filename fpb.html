@@ -92,7 +92,7 @@
 
     <div id="player-container">
         <div id="player"></div>
-        <div class="overlay"></div>
+        <div class="overlay" id="videoOverlay"></div>
         <button id="skipAdsBtn" onclick="skipAd()">Skip Ads</button>
     </div>
 
@@ -110,7 +110,6 @@
 
     <script>
         var player;
-        var lastTime = 0;
         var adCheckInterval;
 
         function onYouTubeIframeAPIReady() {
@@ -172,26 +171,48 @@
             adCheckInterval = setInterval(() => {
                 var currentTime = player.getCurrentTime();
                 var videoData = player.getVideoData();
+                var overlay = document.getElementById("videoOverlay");
+
+                var skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
 
                 if (currentTime < 2 && videoData.title === '') {
-                    console.log("Ad detected! Showing 'Skip Ads' button.");
-                    document.getElementById("skipAdsBtn").style.display = "block";
-                } else if (player.getPlayerState() === 1 && currentTime < lastTime) {
-                    console.log("Mid-roll ad detected! Showing 'Skip Ads' button.");
-                    document.getElementById("skipAdsBtn").style.display = "block";
+                    console.log("Ad detected! Adjusting overlay...");
+                    if (skipButton) {
+                        adjustOverlayForSkipButton(skipButton);
+                    } else {
+                        document.getElementById("skipAdsBtn").style.display = "block";
+                    }
+                } else if (player.getPlayerState() === 1 && currentTime < 3) {
+                    console.log("Mid-roll ad detected! Adjusting overlay...");
+                    if (skipButton) {
+                        adjustOverlayForSkipButton(skipButton);
+                    } else {
+                        document.getElementById("skipAdsBtn").style.display = "block";
+                    }
                 } else {
+                    overlay.style.width = "100%";
+                    overlay.style.height = "100%";
                     document.getElementById("skipAdsBtn").style.display = "none";
                 }
-
-                lastTime = currentTime;
             }, 1000);
         }
 
+        function adjustOverlayForSkipButton(skipButton) {
+            var rect = skipButton.getBoundingClientRect();
+            var overlay = document.getElementById("videoOverlay");
+
+            overlay.style.width = rect.width + "px";
+            overlay.style.height = rect.height + "px";
+            overlay.style.top = rect.top + "px";
+            overlay.style.left = rect.left + "px";
+            overlay.style.background = "transparent";
+        }
+
         function skipAd() {
-            var skipButton = document.querySelector(".ytp-ad-skip-button");
+            var skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
             if (skipButton) {
                 skipButton.click();
-                console.log("Clicked 'Skip Ad' button.");
+                console.log("Clicked YouTube 'Skip Ad' button.");
             } else {
                 player.seekTo(player.getCurrentTime() + 5, true);
                 console.log("No skip button found, seeking forward.");

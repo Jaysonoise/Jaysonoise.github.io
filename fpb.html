@@ -7,7 +7,7 @@
 
     <!-- Meta Tags for SEO & Social Sharing -->
     <meta content="How You Can Make Extra 100K to 300K Weekly" name="description">
-    <meta content="Affiliate Marketing, digital markrting, how to earn extra income" name="keywords">
+    <meta content="Affiliate Marketing, digital marketing, how to earn extra income" name="keywords">
     <meta property="og:title" content="Secret Exposed: How You Can Make Extra 100K to 300K Weekly">
     <meta property="og:url" content="https://jaysonoise.github.io/fpb.html">
     <meta property="og:image" content="https://i.ibb.co/TRNyhX4/IMG-20221228-171232-678.jpg">
@@ -28,27 +28,22 @@
             margin-bottom: 20px;
             font-weight: bold;
         }
-.video-container {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    overflow: hidden;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
-}
-
-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-
-
-
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
         /* Overlays */
         .overlay {
             position: absolute;
@@ -95,31 +90,25 @@ iframe {
             height: 60px;
             font-size: 24px;
         }
-
-        /* Seek Messages */
-        .seek-message {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.7);
+        /* Share Button */
+        .share-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #007bff;
             color: white;
-            padding: 5px 10px;
+            border: none;
             border-radius: 5px;
-            display: none;
-            z-index: 3;
-            font-size: 16px;
+            cursor: pointer;
         }
-        .seek-backward {
-            top: 50%; left: 10px;
-            transform: translateY(-50%);
-        }
-        .seek-forward {
-            top: 50%; right: 10px;
-            transform: translateY(-50%);
+        .share-btn:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
 
-    <h1><span class="text-danger">Secret Exposed:</span>How You Can Make Extra 100K to 300K Weekly</h1>
+    <h1><span class="text-danger">Secret Exposed:</span> How You Can Make Extra 100K to 300K Weekly</h1>
 
     <div class="video-container">
         <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
@@ -128,9 +117,6 @@ iframe {
         <div class="overlay" id="top-overlay"></div>
         <div class="overlay" id="middle-overlay"></div>
         <div class="overlay" id="bottom-overlay"></div>
-
-        <div class="seek-message seek-backward" id="seek-backward-msg"><i class="fas fa-backward"></i> Seek 10s</div>
-        <div class="seek-message seek-forward" id="seek-forward-msg">Seek 10s <i class="fas fa-forward"></i></div>
     </div>
 
     <div class="controls">
@@ -139,8 +125,9 @@ iframe {
             <i class="fas fa-play"></i>
         </button>
         <button class="control-btn" onclick="seek(10)"><i class="fas fa-forward"></i></button>
+    <!-- Share Button -->
+      <button class="control-btn" onclick="sharePage()"><i class="fas fa-share"></i></button>
     </div>
-
     <script>
         let player;
         let isPausedManually = false;
@@ -172,13 +159,6 @@ iframe {
         function seek(seconds) {
             if (!player) return;
             player.seekTo(player.getCurrentTime() + seconds, true);
-            showSeekMessage(seconds);
-        }
-
-        function showSeekMessage(seconds) {
-            const message = seconds > 0 ? document.getElementById('seek-forward-msg') : document.getElementById('seek-backward-msg');
-            message.style.display = 'block';
-            setTimeout(() => message.style.display = 'none', 800);
         }
 
         function onPlayerStateChange(event) {
@@ -192,34 +172,23 @@ iframe {
             } else if (event.data === YT.PlayerState.PAUSED && !isPausedManually) {
                 icon.className = "fas fa-play";
             }
-
-            checkForAds();
         }
 
-        function checkForAds() {
-            setInterval(() => {
-                const iframe = document.querySelector("iframe");
-                if (!iframe || !iframe.contentWindow) return;
+        function sharePage() {
+            const pageUrl = window.location.href;
 
-                try {
-                    const bottomOverlay = document.getElementById('bottom-overlay');
-                    const iframeDoc = iframe.contentWindow.document;
-
-                    // Detect YouTube ad elements
-                    const adOverlay = iframeDoc.querySelector(".ytp-ad-overlay-container");
-                    const skipButton = iframeDoc.querySelector(".ytp-ad-skip-button");
-                    const sponsoredText = [...iframeDoc.querySelectorAll("*")].find(el => el.textContent.includes("Sponsored"));
-
-                    if (skipButton || adOverlay || sponsoredText) {
-                        console.log("Ad detected. Removing bottom overlay...");
-                        bottomOverlay.style.display = "none"; // Allow interactions with Skip Ad
-                    } else {
-                        bottomOverlay.style.display = "block"; // Restore bottom overlay after ad
-                    }
-                } catch (error) {
-                    console.warn("Cross-Origin Restriction: Cannot detect ads directly.");
-                }
-            }, 1000);
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: pageUrl
+                }).then(() => console.log('Shared successfully'))
+                  .catch(error => console.error('Error sharing:', error));
+            } else {
+                // Copy to clipboard fallback
+                navigator.clipboard.writeText(pageUrl)
+                    .then(() => console.log('Page link copied!'))
+                    .catch(err => console.error('Failed to copy:', err));
+            }
         }
 
         // Load YouTube API

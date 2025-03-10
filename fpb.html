@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom YouTube Player</title>
+    <title>Affiliate Marketing Beginner Guide</title>
 
-    <!-- Bootstrap 5 & FontAwesome (Updated Link) -->
+    <!-- Meta Tags for SEO & Social Sharing -->
+    <meta content="How You Can Make Extra 100K to 300K Weekly" name="description">
+    <meta content="Affiliate Marketing, digital markrting, how to earn extra income" name="keywords">
+    <meta property="og:title" content="Secret Exposed: How You Can Make Extra 100K to 300K Weekly">
+    <meta property="og:url" content="https://jaysonoise.github.io/fpb.html">
+    <meta property="og:image" content="https://i.ibb.co/TRNyhX4/IMG-20221228-171232-678.jpg">
+    <meta property="og:description" content="Free video reveals how you can earn at least 100K every week">
+
+    <!-- Bootstrap 5 & FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
@@ -15,45 +23,54 @@
             text-align: center;
             padding-top: 20px;
         }
-     .video-container {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: auto;
-        overflow: hidden;
-        padding-top: 56.25%; /* 16:9 Aspect Ratio */
-      }
-      iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    overflow: hidden;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
 
 
 
-.overlay {
-        position: absolute;
-        width: 100%;
-        background: transparent;
-        z-index: 2;
-      }
-      #top-overlay {
-        top: 0;
-        height: 15%;
-      }
-      #middle-overlay {
-        top: 15%;
-        height: 45%;
-        background:white;
-      }
-      #bottom-overlay {
-        bottom: 0;
-        height: 15%;
-      }
 
+        /* Overlays */
+        .overlay {
+            position: absolute;
+            width: 100%;
+            background: transparent;
+            z-index: 2;
+        }
+        #top-overlay {
+            top: 0;
+            height: 15%;
+        }
+        #middle-overlay {
+            top: 15%;
+            height: 50%;
+/*             background: white; */
+        }
+        #bottom-overlay {
+            bottom: 0;
+            height: 15%;
+        }
+
+        /* Controls */
         .controls {
             margin-top: 10px;
             display: flex;
@@ -80,6 +97,8 @@
             height: 60px;
             font-size: 24px;
         }
+
+        /* Seek Messages */
         .seek-message {
             position: absolute;
             background: rgba(0, 0, 0, 0.7);
@@ -102,9 +121,15 @@
 </head>
 <body>
 
+    <h1><span class="text-danger">Secret Exposed:</span>How You Can Make Extra 100K to 300K Weekly</h1>
+
     <div class="video-container">
         <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
-        <div class="overlay" id="overlay"></div>
+
+        <!-- Overlays -->
+        <div class="overlay" id="top-overlay"></div>
+        <div class="overlay" id="middle-overlay"></div>
+        <div class="overlay" id="bottom-overlay"></div>
 
         <div class="seek-message seek-backward" id="seek-backward-msg"><i class="fas fa-backward"></i> Seek 10s</div>
         <div class="seek-message seek-forward" id="seek-forward-msg">Seek 10s <i class="fas fa-forward"></i></div>
@@ -179,18 +204,19 @@
                 if (!iframe || !iframe.contentWindow) return;
 
                 try {
-                    const overlay = document.getElementById('overlay');
+                    const bottomOverlay = document.getElementById('bottom-overlay');
+                    const iframeDoc = iframe.contentWindow.document;
 
-                    // Detects YouTube ad elements
-                    const adOverlay = iframe.contentWindow.document.querySelector(".ytp-ad-overlay-container");
-                    const skipButton = iframe.contentWindow.document.querySelector(".ytp-ad-skip-button");
+                    // Detect YouTube ad elements
+                    const adOverlay = iframeDoc.querySelector(".ytp-ad-overlay-container");
+                    const skipButton = iframeDoc.querySelector(".ytp-ad-skip-button");
+                    const sponsoredText = [...iframeDoc.querySelectorAll("*")].find(el => el.textContent.includes("Sponsored"));
 
-                    if (skipButton || adOverlay) {
-                        console.log("Ad detected. Skipping...");
-                        player.seekTo(player.getCurrentTime() + 5, true); // Skip ahead 5 seconds
-                        overlay.style.display = "none"; // Allow skip button interaction
+                    if (skipButton || adOverlay || sponsoredText) {
+                        console.log("Ad detected. Removing bottom overlay...");
+                        bottomOverlay.style.display = "none"; // Allow interactions with Skip Ad
                     } else {
-                        overlay.style.display = "block"; // Re-add overlay after ad
+                        bottomOverlay.style.display = "block"; // Restore bottom overlay after ad
                     }
                 } catch (error) {
                     console.warn("Cross-Origin Restriction: Cannot detect ads directly.");

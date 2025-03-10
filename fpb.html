@@ -69,6 +69,19 @@
             height: 65px;
             font-size: 24px;
         }
+        #adSkipMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            display: none;
+            z-index: 3;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +91,7 @@
     <div id="player-container">
         <div id="player"></div>
         <div class="overlay"></div>
+        <div id="adSkipMessage">Skipped Ads</div>
     </div>
 
     <div class="controls">
@@ -95,7 +109,6 @@
     <script>
         var player;
         var lastTime = 0;
-        var lastVideoDuration = 0;
         var adCheckInterval;
 
         function onYouTubeIframeAPIReady() {
@@ -123,7 +136,6 @@
         }
 
         function onPlayerReady(event) {
-            skipPreRollAds();
             startAdCheck();
         }
 
@@ -154,38 +166,36 @@
             }
         }
 
-        function skipPreRollAds() {
-            let attempts = 0;
-            let maxAttempts = 5;
-
-            function trySkip() {
-                if (player.getCurrentTime() < 5 && attempts < maxAttempts) {
-                    player.seekTo(5, true);
-                    attempts++;
-                    setTimeout(trySkip, 1000);
-                }
-            }
-
-            setTimeout(trySkip, 2000);
-        }
-
         function startAdCheck() {
             adCheckInterval = setInterval(() => {
                 var currentTime = player.getCurrentTime();
-                var currentDuration = player.getDuration();
-                
-                if (lastVideoDuration > 0 && currentDuration !== lastVideoDuration) {
-                    console.log("Ad detected! Skipping...");
-                    player.seekTo(currentTime + 5, true);
+                var videoData = player.getVideoData();
+
+                // Detect Pre-Roll Ads
+                if (currentTime < 2 && videoData.title === '') {
+                    console.log("Pre-roll ad detected!");
+                    setTimeout(() => {
+                        showSkipMessage();
+                        player.seekTo(2, true); // Skip ad after 1 second
+                    }, 1000); 
                 }
 
+                // Detect Mid-Roll Ads
                 if (player.getPlayerState() === 1 && currentTime < lastTime) {
                     console.log("Mid-roll ad detected! Skipping...");
-                    player.seekTo(currentTime + 5, true);
+                    showSkipMessage();
+                    player.seekTo(currentTime + 5, true); // Skip mid-roll ad
                 }
 
                 lastTime = currentTime;
-                lastVideoDuration = currentDuration;
+            }, 1000);
+        }
+
+        function showSkipMessage() {
+            var msg = document.getElementById("adSkipMessage");
+            msg.style.display = "block";
+            setTimeout(() => {
+                msg.style.display = "none";
             }, 1000);
         }
     </script>

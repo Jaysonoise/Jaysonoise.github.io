@@ -61,7 +61,6 @@
         bottom: 0;
         height: 15%;
         background: white;
-
       }
       /* Controls */
       .controls {
@@ -71,7 +70,8 @@
         gap: 15px;
       }
       .control-btn {
-        width: 50px; height: 50px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         background: black;
         color: white;
@@ -102,17 +102,19 @@
         font-size: 16px;
       }
       .seek-backward {
-        top: 50%; left: 10px;
+        top: 50%;
+        left: 10px;
         transform: translateY(-50%);
       }
       .seek-forward {
-        top: 50%; right: 10px;
+        top: 50%;
+        right: 10px;
         transform: translateY(-50%);
       }
     </style>
   </head>
   <body>
-    <h1><span class="text-danger">Secret Exposed:</span>How You Can Make Extra 100K to 300K Weekly</h1>
+    <h1><span class="text-danger">Secret Exposed:</span> How You Can Make Extra 100K to 300K Weekly</h1>
     <div class="video-container">
       <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
       <!-- Overlays -->
@@ -136,61 +138,37 @@
 
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('youtube-video', {
-          events: { 'onStateChange': onPlayerStateChange }
+          events: { 'onReady': onPlayerReady }
         });
       }
 
-      function onPlayerStateChange(event) {
-        detectAd();
+      function onPlayerReady(event) {
+        console.log("YouTube Player Ready");
       }
 
-      function detectAd() {
-        setInterval(() => {
-          if (!player) return;
-
-          const videoUrl = player.getVideoUrl();
-          const bottomOverlay = document.getElementById('bottom-overlay');
-
-          try {
-            const iframe = document.querySelector("iframe");
-            const iframeDoc = iframe.contentWindow.document;
-            const adOverlay = iframeDoc.querySelector(".ytp-ad-overlay-container");
-            const skipButton = iframeDoc.querySelector(".ytp-ad-skip-button");
-            const sponsoredText = [...iframeDoc.querySelectorAll("*")].find(el => el.textContent.includes("Sponsored"));
-
-            if (videoUrl.includes("googlevideo.com") || skipButton || adOverlay || sponsoredText) {
-              console.log("Ad detected! Skipping...");
-              showSkippedMessage();
-              skipAd();
-            }
-          } catch (error) {
-            console.warn("CORS Restriction: Cannot fully access iframe.");
-          }
-        }, 1000);
-      }
-
-      function skipAd() {
+      function togglePlayPause() {
         if (!player) return;
-        const currentTime = player.getCurrentTime();
-        player.loadVideoById(player.getVideoData().video_id, currentTime);
+        const playPauseBtn = document.getElementById("play-pause");
+        if (player.getPlayerState() === 1) { // If playing
+          player.pauseVideo();
+          playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        } else {
+          player.playVideo();
+          playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }
       }
 
-      function showSkippedMessage() {
-        const message = document.createElement("div");
-        message.textContent = "Skipped Ads";
-        message.style.position = "absolute";
-        message.style.top = "50%";
-        message.style.left = "50%";
-        message.style.transform = "translate(-50%, -50%)";
-        message.style.background = "rgba(0, 0, 0, 0.8)";
-        message.style.color = "white";
-        message.style.padding = "10px 20px";
-        message.style.borderRadius = "5px";
-        message.style.fontSize = "16px";
-        message.style.zIndex = "3";
-        document.body.appendChild(message);
+      function seek(seconds) {
+        if (!player) return;
+        const newTime = player.getCurrentTime() + seconds;
+        player.seekTo(newTime, true);
+        showSeekMessage(seconds);
+      }
 
-        setTimeout(() => message.remove(), 1000);
+      function showSeekMessage(seconds) {
+        const message = seconds > 0 ? document.getElementById("seek-forward-msg") : document.getElementById("seek-backward-msg");
+        message.style.display = "block";
+        setTimeout(() => message.style.display = "none", 800);
       }
 
       var tag = document.createElement('script');

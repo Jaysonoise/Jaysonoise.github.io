@@ -8,7 +8,7 @@
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- YouTube API -->
     <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -16,142 +16,70 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f8f9fa;
-            padding: 20px;
+            margin: 20px;
+            background: #f8f9fa;
         }
         #player-container {
             position: relative;
             max-width: 100%;
-            margin: auto;
-        }
-        iframe {
-            width: 100%;
+            width: 560px;
             height: 315px;
-            display: block;
+            margin: auto;
+            background: black;
         }
+        #player {
+            width: 100%;
+            height: 100%;
+        }
+        /* Transparent overlay to prevent YouTube clicks */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 2;
+        }
+        /* Seek Message */
+        .seek-message {
+            position: absolute;
+            top: 50%;
+            font-size: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 3;
+            transition: opacity 0.3s ease-out;
+        }
+        .seek-message.right {
+            right: 10px;
+            transform: translateY(-50%);
+        }
+        .seek-message.left {
+            left: 10px;
+            transform: translateY(-50%);
+        }
+        /* Button Styles */
         .controls {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
+            margin-top: 15px;
         }
         .control-btn {
             width: 50px;
             height: 50px;
-            border-radius: 50%;
-            background-color: black;
-            color: white;
-            border: none;
             font-size: 20px;
-            display: flex;
+            color: white;
+            background: black;
+            border: none;
+            border-radius: 50%;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            position: relative;
+            margin: 5px;
+            transition: transform 0.2s ease-in-out;
         }
         .control-btn:active {
-            transform: scale(0.9);
-        }
-        .seek-icon {
-            position: absolute;
-            font-size: 12px;
-            bottom: 5px;
-            right: 5px;
-        }
-    </style>
-</head>
-<body>
-
-    <h2>Custom YouTube Player</h2>
-
-    <div id="player-container">
-        <div id="player"></div>
-    </div>
-
-    <div class="controls">
-        <button class="control-btn" onclick="seekBackward()">
-            <i class="fa-solid fa-rotate-left"></i>
-        </button>
-        <button class="control-btn" id="playPauseBtn" onclick="togglePlayPause()">
-            <i class="fa-solid fa-play"></i>
-        </button>
-        <button class="control-btn" id="muteUnmuteBtn" onclick="toggleMute()">
-            <i class="fa-solid fa-volume-up"></i>
-        </button>
-        <button class="control-btn" onclick="seekForward()">
-            <i class="fa-solid fa-rotate-right"></i>
-        </button>
-        <button class="control-btn" onclick="enterFullscreen()">
-            <i class="fa-solid fa-expand"></i>
-        </button>
-    </div>
-
-    <script>
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                videoId: 'ci5vgwoyfH8',
-                playerVars: {
-                    'controls': 0,
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'showinfo': 0
-                }
-            });
-        }
-
-        function togglePlayPause() {
-            var playPauseBtn = document.getElementById("playPauseBtn");
-            var icon = playPauseBtn.querySelector("i");
-
-            if (player.getPlayerState() == 1) {
-                player.pauseVideo();
-                icon.classList.remove("fa-pause");
-                icon.classList.add("fa-play");
-            } else {
-                player.playVideo();
-                icon.classList.remove("fa-play");
-                icon.classList.add("fa-pause");
-            }
-        }
-
-        function toggleMute() {
-            var muteUnmuteBtn = document.getElementById("muteUnmuteBtn");
-            var icon = muteUnmuteBtn.querySelector("i");
-
-            if (player.isMuted()) {
-                player.unMute();
-                icon.classList.remove("fa-volume-mute");
-                icon.classList.add("fa-volume-up");
-            } else {
-                player.mute();
-                icon.classList.remove("fa-volume-up");
-                icon.classList.add("fa-volume-mute");
-            }
-        }
-
-        function seekForward() {
-            player.seekTo(player.getCurrentTime() + 10, true);
-        }
-
-        function seekBackward() {
-            player.seekTo(player.getCurrentTime() - 10, true);
-        }
-
-        function enterFullscreen() {
-            var iframe = document.getElementById("player");
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.mozRequestFullScreen) {
-                iframe.mozRequestFullScreen();
-            } else if (iframe.webkitRequestFullscreen) {
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) {
-                iframe.msRequestFullscreen();
-            }
-        }
-    </script>
-
-</body>
-</html>
+            transform: scale(0.

@@ -3,68 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lazy Load Images Without JavaScript</title>
+    <title>How You Can Make 100K to 300K Weekly</title>
+
+    <!-- Meta Tags for SEO & Social Sharing -->
+    <meta content="How You Can Make Extra 100K to 300K Weekly" name="description">
+    <meta content="Affiliate Marketing, digital marketing, how to earn extra income" name="keywords">
+    <meta property="og:title" content="Secret Exposed: How You Can Make Extra 100K to 300K Weekly">
+    <meta property="og:url" content="https://jaysonoise.github.io/fpb.html">
+    <meta property="og:image" content="https://i.ibb.co/F4kPZ8wK/20250310-232940.jpg">
+    <meta property="og:description" content="Free video reveals how you can earn at least 100K every week">
+
+    <!-- Bootstrap 5 & FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
     <style>
-        /* Placeholder container */
-        .image-container {
+        body {
+            background-color: #fff;
+            text-align: center;
+            padding-top: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .video-container {
+            position: relative;
             width: 100%;
-            height: 300px; /* Adjust as needed */
-            background-color: #f0f0f0; /* Placeholder color */
+            max-width: 800px;
+            margin: auto;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* Overlays */
+        .overlay {
+            position: absolute;
+            width: 100%;
+            background: transparent;
+            z-index: 2;
+        }
+        #top-overlay {
+            top: 0;
+            height: 15%;
+        }
+        #middle-overlay {
+            top: 15%;
+            height: 40%;
+        }
+        #bottom-overlay {
+            bottom: 0;
+            height: 25%;
+        }
+        /* Controls */
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .control-btn {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: black;
+            color: white;
+            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
+            font-size: 20px;
+            transition: transform 0.2s;
         }
-
-        /* Show "Loading Image..." text only when the image is not loaded */
-        .image-container::before {
-            content: "Loading Image...";
-            color: #888;
+        .control-btn:active {
+            transform: scale(0.9);
+        }
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+        /* Share Button */
+        .share-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
             font-size: 18px;
-            position: absolute;
-            transition: opacity 0.3s ease-in-out;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
-        /* Lazy-loaded image */
-        .lazy-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0; /* Initially hidden */
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        /* When the image starts loading, show it */
-        .lazy-image[loading="lazy"] {
-            opacity: 1;
-        }
-
-        /* Hide placeholder text when the image is visible */
-        .lazy-image[loading="lazy"] + .image-container::before {
-            opacity: 0;
+        .share-btn:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <!-- Image 1 -->
-    <div class="image-container">
-        <img class="lazy-image" src="https://i.ibb.co/4W2Z9tV/client-3.jpg" loading="lazy" alt="Lazy Loaded Image">
+    <h1><span class="text-danger">Secret Exposed:</span> How You Can Make Extra 100K to 300K Weekly</h1>
+
+    <div class="video-container">
+        <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+
+        <!-- Overlays -->
+        <div class="overlay" id="top-overlay"></div>
+        <div class="overlay" id="middle-overlay"></div>
+        <div class="overlay" id="bottom-overlay"></div>
     </div>
 
-    <!-- Image 2 -->
-    <div class="image-container mt-4">
-        <img class="lazy-image" src="https://i.ibb.co/4W2Z9tV/client-3.jpg" loading="lazy" alt="Lazy Loaded Image">
+    <div class="controls">
+        <button class="control-btn" onclick="seek(-10)"><i class="fas fa-backward"></i></button>
+        <button class="control-btn play-btn" id="play-pause" onclick="togglePlayPause()">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="control-btn" onclick="seek(10)"><i class="fas fa-forward"></i></button>
+    <!-- Share Button -->
+      <button class="control-btn" onclick="sharePage()"><i class="fas fa-share"></i></button>
     </div>
+    <script>
+        let player;
+        let isPausedManually = false;
 
-    <!-- Image 3 -->
-    <div class="image-container mt-4">
-        <img class="lazy-image" src="https://i.ibb.co/4W2Z9tV/client-3.jpg" loading="lazy" alt="Lazy Loaded Image">
-    </div>
-</div>
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-video', {
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function togglePlayPause() {
+            if (!player) return;
+            const playPauseBtn = document.getElementById('play-pause');
+            const icon = playPauseBtn.querySelector('i');
+
+            if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                player.pauseVideo();
+                isPausedManually = true;
+                icon.className = "fas fa-play";
+            } else {
+                player.playVideo();
+                isPausedManually = false;
+                icon.className = "fas fa-pause";
+            }
+        }
+
+        function seek(seconds) {
+            if (!player) return;
+            player.seekTo(player.getCurrentTime() + seconds, true);
+        }
+
+        function onPlayerStateChange(event) {
+            const playPauseBtn = document.getElementById('play-pause');
+            const icon = playPauseBtn.querySelector('i');
+
+            if (event.data === YT.PlayerState.ENDED) {
+                icon.className = "fas fa-play";
+            } else if (event.data === YT.PlayerState.PLAYING) {
+                icon.className = "fas fa-pause";
+            } else if (event.data === YT.PlayerState.PAUSED && !isPausedManually) {
+                icon.className = "fas fa-play";
+            }
+        }
+
+        function sharePage() {
+            const pageUrl = window.location.href;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: pageUrl
+                }).then(() => console.log('Shared successfully'))
+                  .catch(error => console.error('Error sharing:', error));
+            } else {
+                // Copy to clipboard fallback
+                navigator.clipboard.writeText(pageUrl)
+                    .then(() => console.log('Page link copied!'))
+                    .catch(err => console.error('Failed to copy:', err));
+            }
+        }
+
+        // Load YouTube API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    </script>
 
 </body>
 </html>

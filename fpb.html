@@ -1,186 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How You Can Make 100K to 300K Weekly</title>
-    <!-- Meta Tags for SEO & Social Sharing -->
-    <meta content="How You Can Make Extra 100K to 300K Weekly" name="description">
-    <meta content="Affiliate Marketing, digital marketing, how to earn extra income" name="keywords">
-    <meta property="og:title" content="Secret Exposed: How You Can Make Extra 100K to 300K Weekly">
-    <meta property="og:url" content="https://jaysonoise.github.io/fpb.html">
-    <meta property="og:image" content="https://i.ibb.co/F4kPZ8wK/20250310-232940.jpg">
-    <meta property="og:description" content="Free video reveals how you can earn at least 100K every week">
-    <!-- Bootstrap 5 & FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-      body {
-        background-color: #fff;
-        text-align: center;
-        padding-top: 20px;
-      }
-      h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-        font-weight: bold;
-      }
-      .video-container {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: auto;
-        overflow: hidden;
-        padding-top: 56.25%; /* 16:9 Aspect Ratio */
-      }
-      iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
-      /* Overlays */
-      .overlay {
-        position: absolute;
-        width: 100%;
-        background: transparent;
-        z-index: 2;
-      }
-      #top-overlay {
-        top: 0;
-        height: 15%;
-      }
-      #middle-overlay {
-        top: 15%;
-        height: 50%;
-      }
-      #bottom-overlay {
-        bottom: 0;
-        height: 18.5%;
-      }
-      /* Controls */
-      .controls {
-        margin-top: 10px;
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-      }
-      .control-btn {
-        width: 50px; 
-        height: 50px;
-        border-radius: 50%;
-        background: black;
-        color: white;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        transition: transform 0.2s;
-      }
-      .control-btn:active {
-        transform: scale(0.9);
-      }
-      .play-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-      }
-      /* Share Button */
-      .share-btn {
-        margin-top: 15px;
-        padding: 10px 20px;
-        font-size: 18px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .share-btn:active {
-        transform: scale(0.95);
-      }
-    </style>
-  </head>
-  <body>
-    <h1><span class="text-danger">Secret Exposed:</span> How You Can Make Extra 100K to 300K Weekly</h1>
-    <div class="video-container">
-      <iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
-      <!-- Overlays -->
-      <div class="overlay" id="top-overlay"></div>
-      <div class="overlay" id="middle-overlay"></div>
-      <div class="overlay" id="bottom-overlay"></div>
-    </div>
-    <div class="controls">
-      <button class="control-btn" onclick="seek(-10)"><i class="fas fa-backward"></i></button>
-      <button class="control-btn play-btn" id="play-pause" onclick="togglePlayPause()">
-        <i class="fas fa-play"></i>
-      </button>
-      <button class="control-btn" onclick="seek(10)"><i class="fas fa-forward"></i></button>
-      <!-- Share Button -->
-      <button class="control-btn" onclick="sharePage()"><i class="fas fa-share"></i></button>
-    </div>
-    <script>
-      let player;
-      let isPausedManually = false;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('youtube-video', {
-          events: {
-            'onStateChange': onPlayerStateChange
-          }
-        });
-      }
-      function togglePlayPause() {
-        if (!player) return;
-        const playPauseBtn = document.getElementById('play-pause');
-        const icon = playPauseBtn.querySelector('i');
-        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-          player.pauseVideo();
-          isPausedManually = true;
-          icon.className = "fas fa-play";
-        } else {
-          player.playVideo();
-          isPausedManually = false;
-          icon.className = "fas fa-pause";
-        }
-      }
-      function seek(seconds) {
-        if (!player) return;
-        player.seekTo(player.getCurrentTime() + seconds, true);
-      }
-      function onPlayerStateChange(event) {
-        const playPauseBtn = document.getElementById('play-pause');
-        const icon = playPauseBtn.querySelector('i');
-        if (event.data === YT.PlayerState.ENDED) {
-          icon.className = "fas fa-play";
-        } else if (event.data === YT.PlayerState.PLAYING) {
-          icon.className = "fas fa-pause";
-        } else if (event.data === YT.PlayerState.PAUSED && !isPausedManually) {
-          icon.className = "fas fa-play";
-        }
-      }
-      function sharePage() {
-        const pageUrl = window.location.href;
-        if (navigator.share) {
-          navigator.share({
-            title: document.title,
-            url: pageUrl
-          }).then(() => console.log('Shared successfully'))
-            .catch(error => console.error('Error sharing:', error));
-        } else {
-          // Copy to clipboard fallback
-          navigator.clipboard.writeText(pageUrl)
-            .then(() => console.log('Page link copied!'))
-            .catch(err => console.error('Failed to copy:', err));
-        }
-      }
-      // Load YouTube API
-      var tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    </script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How You Can Make 50K to 150K Weekly</title>
+<meta content="How You Can Make Extra 100K to 300K Weekly" name="description">
+<meta content="Affiliate Marketing, digital marketing, how to earn extra income" name="keywords">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<style>
+body{background:#f4f4f4;padding-top:20px;font-family:Arial,sans-serif}h1{font-size:24px;font-weight:bold;color:#333}.countdown-container{max-width:450px;margin:auto;padding:10px;display:flex;justify-content:space-between}.countdown-card{width:22%;padding:8px;border-radius:6px;background:#fff;box-shadow:0 3px 6px rgba(0,0,0,.15);text-align:center}.countdown-number{font-size:20px;font-weight:bold;color:#ff6347}.countdown-label{font-size:11px;text-transform:uppercase;color:#666;margin-top:3px}.video-container{position:relative;width:100%;max-width:700px;margin:auto;overflow:hidden;padding-top:56.25%}iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}.overlay{position:absolute;width:100%;background:transparent;z-index:2}#top-overlay{top:0;height:15%}#middle-overlay{top:15%;height:50%}#bottom-overlay{bottom:0;height:18.5%}.controls{margin-top:10px;display:flex;justify-content:center;gap:15px}.control-btn{width:50px;height:50px;border-radius:50%;background:black;color:white;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform .2s}.control-btn:active{transform:scale(.9)}.play-btn{width:60px;height:60px;font-size:24px}#video-unavailable{font-size:20px;font-weight:bold;color:red;display:none}#video-timer{font-size:16px;font-weight:bold;margin-top:5px;display:none}#seek-message{position:absolute;top:0;width:30%;height:100%;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);font-size:20px;color:white;font-weight:bold}.seek-left{left:0;right:70%}.seek-right{right:0;left:70%}.no-select{-webkit-user-select:none;-ms-user-select:none;user-select:none}.image-container{width:100%;height:350px;position:relative;overflow:hidden}.placeholder{width:100%;height:350px;background-color:#f0f0f0;display:flex;align-items:center;justify-content:center;position:absolute;top:0;left:0;z-index:1}.placeholder::before{content:"Loading Image \A Please wait...";white-space:pre;color:#888;font-size:18px}.lazy-image{width:100%;height:100%;opacity:0;object-fit:contain;transition:opacity .5s ease-in-out}.lazy-image.loaded{opacity:1}</style>
+</head>
+<body>
+<header id="header" class="header d-flex align-items-center">
+<div class="container-fluid d-flex align-items-center justify-content-between">
+<div class="logo d-flex align-items-center me-auto me-xl-0">
+<h1 class="text-center"><span class="text-danger">Secret Exposed:</span> How You Can Make Extra &#8358;50K to &#8358;150K Weekly</h1>
+</div>
+</div>
+</header>
+<main id="main">
+<section id="countdown" class="countdown">
+<h5 class="text-primary fw-bold text-center">Video Expires in:</h5>
+<div class="countdown-container">
+<div class="countdown-card"><div id="days" class="countdown-number">00</div><div class="countdown-label">Day</div></div>
+<div class="countdown-card"><div id="hours" class="countdown-number">00</div><div class="countdown-label">Hour</div></div>
+<div class="countdown-card"><div id="minutes" class="countdown-number">00</div><div class="countdown-label">Minute</div></div>
+<div class="countdown-card"><div id="seconds" class="countdown-number">00</div><div class="countdown-label">Second</div></div>
+</div>
+<div id="nb" class="text-secondary text-center px-3 fw-bold"><span class="fw-bold text-danger">WARNING:</span> Once this video expires, you may never get this chance again. Watch it NOW before it us too late</div>
+</section>
+<section id="videoarea" class="videoarea">
+<div class="video-container" id="video-container">
+<iframe id="youtube-video" src="https://www.youtube.com/embed/ci5vgwoyfH8?enablejsapi=1&rel=0&modestbranding=1&controls=0&playsinline=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+<div class="overlay" id="top-overlay"></div>
+<div class="overlay" id="middle-overlay"></div>
+<div class="overlay" id="bottom-overlay"></div>
+<p id="seek-message">
+<i id="seek-icon" class="fas fa-forward"></i> <span id="seek-text" class="mx-1">10s</span>
+</p>
+</div>
+<p id="video-timer" class="text-center">00:00 / 00:00</p>
+<p id="video-unavailable" class="text-center">Sorry this video is no longer available</p>
+<div class="controls" id="video-controls">
+<button class="control-btn" onclick="seek(-10)"> <i class="fas fa-backward"></i></button>
+<button class="control-btn play-btn" id="play-pause" onclick="togglePlayPause()"><i class="fas fa-play"></i></button>
+<button class="control-btn" onclick="seek(10)"><i class="fas fa-forward"></i></button>
+<button class="control-btn" onclick="sharePage()"><i class="fas fa-share"></i></button>
+</div>
+</section>
+<section id="closing" class="closing">
+<div class="container">
+<div class="row align-items-xl-center gy-5">
+<div class="fs-6 content">
+<div class="border-secondary border-bottom my-3"></div>
+<h5 class="text-center fw-bold text-secondary h3">Final Thoughts &#38; Your Next Step</h5>
+<div class="fs-5">
+<p>You’ve just seen undeniable proof—<span class="fw-bold text-secondary">real people, real results, real transformation.</span></p>
+<p>These were people just like you—stuck, frustrated, and unsure of their next move.</p>
+<p>But <span class="fw-bold text-secondary">they made a decision. They took action.</span> And now, their finances, confidence, and future have completely changed.</p>
+<h5 class="text-center fw-bold text-secondary h3">See for yourself</h5>
+<div class="col-md-6 col-12 mx-auto mx-md-1 h-100">
+<div class="fw-bold text-secondary bg-white p-2 rounded-top mt-2 fs-6">I remembered when I was broke... Just got paid &#8358;264K in one week. </div>
+<div class="image-container">
+<div class="placeholder"></div> <!-- Placeholder -->
+<img src="https://i.ibb.co/nM73Pmz4/Screenshot-20250326-041316.jpg" class="img-fluid bg-light lazy-image" loading="lazy" alt="Oluwaseun made 225K in one week" border="0">
+</div>
+</div>
+<p class="fw-bold text-secondary my-3">Now, it’s your turn.</p>
+<p>I want you to pause for a moment and ask yourself—<span class="fw-bold text-secondary">what if this is the opportunity that finally changes everything for you?</span></p>
+<p>What if, a few weeks from now, you look back and realize this was the moment that set you free? The moment you stopped wishing and started winning?</p>
+<p>At the end of the day, <span class="fw-bold text-secondary">the only thing standing between you and the life you truly want is one decision—the decision to act.</span></p>
+<p>Don’t let fear, doubt, or hesitation rob you of your breakthrough. This is your time. Let’s make it happen—together.</p>
+<p class="fw-bold text-secondary">Click on the button below and let me know you’re ready.</p>
+<div class="col-12 text-center my-4">
+<a class="btn btn-success btn-lg btn-block fw-bold mb-2" target="_blank" href="https://https://wa.link/bfl5z4">I have watched the video</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer id="footer" class="footer mt-4 bg-dark text-white py-4 small">
+<div class="container copyright text-center">
+<div class="col-md-12 footer-about mb-2">
+This site is not a part of Google™. Additionally this website is not endorsed by Google™ YouTube™ or Facebook Inc. in any way. Google™ is a trademark for all their respective companies, FACEBOOK™ is a trademark of FACEBOOK, Inc.
+</div>
+<p>&copy;<span>Copyright</span> <span class="px-1" id="displayYear"></span>NextGen Wealth Network</p>
+<p> All Rights Reserved</p>
+</div>
+</footer>
+<script>const today=new Date,year=today.getFullYear(),formattedDate=year+".";document.getElementById("displayYear").innerHTML=formattedDate;let player,countdownEndTime=new Date("2025-03-27T21:27:00Z").getTime();function updateCountdown(){let t=new Date().getTime(),e=countdownEndTime-t;if(e>0){let n=Math.floor(e/864e5),o=Math.floor(e%864e5/36e5),a=Math.floor(e%36e5/6e4),d=Math.floor(e%6e4/1e3);document.getElementById("days").innerText=n,document.getElementById("hours").innerText=o,document.getElementById("minutes").innerText=a,document.getElementById("seconds").innerText=d,document.querySelector(".countdown-card:nth-child(1) .countdown-label").innerText=n>1?"Days":"Day",document.querySelector(".countdown-card:nth-child(2) .countdown-label").innerText=o>1?"Hours":"Hour",document.querySelector(".countdown-card:nth-child(3) .countdown-label").innerText=a>1?"Minutes":"Minute",document.querySelector(".countdown-card:nth-child(4) .countdown-label").innerText=d>1?"Seconds":"Second",document.getElementById("video-timer").style.display="block"}else document.getElementById("video-container").style.display="none",document.getElementById("video-controls").style.display="none",document.getElementById("nb").style.display="none",document.getElementById("video-timer").style.display="none",document.getElementById("video-unavailable").style.display="block",player&&player.stopVideo(),clearInterval(countdownInterval)}const countdownInterval=setInterval(updateCountdown,1e3);function togglePlayPause(){if(player){let t=document.getElementById("play-pause").querySelector("i");1===player.getPlayerState()?(player.pauseVideo(),t.className="fas fa-play"):(player.playVideo(),t.className="fas fa-pause")}}function updatePlayPauseButton(t){let e=document.getElementById("play-pause").querySelector("i");e.className=1===t.data?"fas fa-pause":"fas fa-play"}function onYouTubeIframeAPIReady(){player=new YT.Player("youtube-video",{events:{onStateChange:updatePlayPauseButton}})}function seek(t){if(player){player.seekTo(player.getCurrentTime()+t,!0);let e=document.getElementById("seek-message"),n=document.getElementById("seek-icon");e.classList.remove("seek-left","seek-right"),t>0?(n.className="fas fa-forward",e.classList.add("seek-right")):(n.className="fas fa-backward",e.classList.add("seek-left")),e.style.display="flex",setTimeout(()=>{e.style.display="none"},800)}}function sharePage(){const t=window.location.href;navigator.share?navigator.share({title:document.title,text:"Check out this amazing video on how to make extra 100K to 300K weekly!",url:t}).then(()=>console.log("Shared successfully")).catch(t=>console.error("Error sharing:",t)):(copyToClipboard(t),alert("Link copied to clipboard! You can now share it manually."))}function copyToClipboard(t){const e=document.createElement("input");e.value=t,document.body.appendChild(e),e.select(),document.execCommand("copy"),document.body.removeChild(e)}function updateVideoTimer(){player&&(document.getElementById("video-timer").innerText=formatTime(player.getCurrentTime())+" / "+formatTime(player.getDuration()))}function formatTime(t){let e=Math.floor(t/60),n=Math.floor(t%60);return e+":"+(n<10?"0":"")+n}setInterval(updateVideoTimer,1e3),updateCountdown();document.querySelectorAll(".lazy-image").forEach(t=>{t.addEventListener("load",()=>{t.classList.add("loaded"),t.previousElementSibling.style.display="none"})});</script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
 </html>
